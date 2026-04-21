@@ -49,3 +49,19 @@ single-threaded, sehingga hanya bisa memproses satu request pada satu waktu.
 Ini membuktikan kelemahan single-threaded server: jika ada satu request yang 
 lambat, semua request lain akan ter-blokir (blocking). Solusinya adalah 
 menggunakan multithreading.
+
+## Commit 5 Reflection Notes
+
+Pada milestone ini, server diubah menjadi multithreaded menggunakan ThreadPool.
+ThreadPool mengelola sejumlah Worker thread yang siap mengeksekusi job yang masuk.
+
+Cara kerja ThreadPool:
+- `ThreadPool::new(size)` membuat sejumlah Worker dan sebuah channel (mpsc).
+- Sender disimpan di ThreadPool, Receiver dibungkus Arc<Mutex<>> dan dibagikan ke semua Worker.
+- Setiap Worker berjalan dalam loop, menunggu job dari channel via `receiver.lock().unwrap().recv()`.
+- `pool.execute(f)` mengirim closure sebagai job melalui channel.
+- Arc memungkinkan receiver dimiliki banyak Worker, Mutex memastikan hanya satu Worker 
+  yang mengambil job pada satu waktu.
+
+Dengan ThreadPool berisi 4 thread, server kini bisa memproses hingga 4 request 
+secara bersamaan. Tab yang mengakses `/sleep` tidak lagi memblokir tab lain.
