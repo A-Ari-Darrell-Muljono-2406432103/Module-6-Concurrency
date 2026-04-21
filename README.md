@@ -23,3 +23,15 @@ sebagai pemisah antara header dan body, lalu isi HTML-nya.
 
 `Content-Length` penting agar browser tahu berapa byte yang harus dibaca 
 sebagai body response, sehingga koneksi bisa dikelola dengan benar.
+
+## Commit 3 Reflection Notes
+
+Pada milestone ini, server sudah bisa membedakan request yang valid dan tidak valid.
+Hanya request `GET / HTTP/1.1` yang akan mendapatkan response `200 OK` dengan 
+halaman `hello.html`. Selain itu akan mendapat response `404 NOT FOUND` dengan 
+halaman `404.html`.
+
+Refactoring dilakukan dengan memisahkan penentuan `status_line` dan `filename` 
+ke dalam satu blok kondisional, sehingga logika pembacaan file dan penulisan 
+response hanya ditulis sekali. Ini menerapkan prinsip DRY (Don't Repeat Yourself)
+agar kode lebih bersih dan mudah di-maintain.
