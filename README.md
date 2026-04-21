@@ -35,3 +35,17 @@ Refactoring dilakukan dengan memisahkan penentuan `status_line` dan `filename`
 ke dalam satu blok kondisional, sehingga logika pembacaan file dan penulisan 
 response hanya ditulis sekali. Ini menerapkan prinsip DRY (Don't Repeat Yourself)
 agar kode lebih bersih dan mudah di-maintain.
+
+## Commit 4 Reflection Notes
+
+Pada milestone ini, ditambahkan endpoint `/sleep` yang mensimulasikan proses lambat
+dengan `thread::sleep(Duration::from_secs(10))`.
+
+Ketika dua tab browser dibuka bersamaan — satu ke `/sleep` dan satu ke `/` — 
+tab kedua tidak langsung mendapat response, melainkan ikut menunggu 10 detik 
+sampai request `/sleep` selesai diproses. Ini terjadi karena server masih 
+single-threaded, sehingga hanya bisa memproses satu request pada satu waktu.
+
+Ini membuktikan kelemahan single-threaded server: jika ada satu request yang 
+lambat, semua request lain akan ter-blokir (blocking). Solusinya adalah 
+menggunakan multithreading.
